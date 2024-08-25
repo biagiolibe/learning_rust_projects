@@ -43,7 +43,7 @@ fn main() -> BError {
 struct State {
     ecs: World,
     resources: Resources,
-    systems: Schedule
+    systems: Schedule,
 }
 
 impl State {
@@ -53,12 +53,17 @@ impl State {
         let mut random = RandomNumberGenerator::new();
         let map_builder = MapBuilder::new(&mut random);
         spawn_player(&mut ecs, map_builder.player_start);
+        map_builder.rooms
+            .iter()
+            .skip(1)
+            .map(|room| room.center())
+            .for_each(|pos| spawn_monster(&mut ecs, pos, &mut random));
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
         Self {
             ecs,
             resources,
-            systems: build_scheduler()
+            systems: build_scheduler(),
         }
     }
 }
@@ -71,5 +76,6 @@ impl GameState for State {
         ctx.cls();
         self.resources.insert(ctx.key);
         self.systems.execute(&mut self.ecs, &mut self.resources);
+        render_draw_buffer(ctx).expect("Render error");
     }
 }
