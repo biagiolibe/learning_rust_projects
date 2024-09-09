@@ -25,3 +25,8 @@ pub struct Health {
     pub current: i32,
     pub max: i32
 }
+
+#[derive(Clone, PartialEq)]
+pub struct Name(pub String); // -> https://doc.rust-lang.org/1.26.2/unstable-book/language-features/repr-transparent.html
+
+
