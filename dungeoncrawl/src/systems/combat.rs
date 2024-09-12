@@ -2,6 +2,7 @@ use crate::prelude::*;
 
 #[system]
 #[read_component(WantsToAttack)]
+#[read_component(Player)]
 #[write_component(Health)]
 pub fn combat(
     ecs: &mut SubWorld,
@@ -12,13 +13,14 @@ pub fn combat(
         .iter(ecs)
         .map(|(entity, wants_to_attack)| (*entity, wants_to_attack.victim))
         .collect::<Vec<(Entity, Entity)>>();
-    victims.iter().for_each(|(attacker_entity, victim)| {
+    victims.iter().for_each(|(message, victim)| {
+        let is_player = ecs.entry_ref(*victim).unwrap().get_component::<Player>().is_ok();
         if let Ok(health) = ecs.entry_mut(*victim).unwrap().get_component_mut::<Health>() {
             health.current -= 1;
-            if health.current <1 {
+            if health.current < 1 && !is_player {
                 commands.remove(*victim);
             }
         }
-        commands.remove(*attacker_entity);
+        commands.remove(*message);
     });
 }

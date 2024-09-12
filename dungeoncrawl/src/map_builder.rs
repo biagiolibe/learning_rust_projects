@@ -6,6 +6,7 @@ pub struct MapBuilder {
     pub map: Map,
     pub rooms: Vec<Rect>,
     pub player_start: Point,
+    pub amulet_start: Point,
 }
 
 impl MapBuilder {
@@ -14,11 +15,27 @@ impl MapBuilder {
             map: Map::new(),
             rooms: Vec::new(),
             player_start: Point::zero(),
+            amulet_start: Point::zero(),
         };
         map_builder.fill(TileType::Wall);
         map_builder.build_random_rooms(random);
         map_builder.build_corridors(random);
         map_builder.player_start = map_builder.rooms.first().map_or(Point::zero(), |r| r.center());
+        let dijkstra_map = DijkstraMap::new(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            &vec![map_builder.map.point2d_to_index(map_builder.player_start)],
+            &map_builder.map,
+            1024.0,
+        );
+        const UNREACHABLE: f32 = f32::MAX;
+        let max_distance_idx = dijkstra_map.map
+            .iter()
+            .enumerate()
+            .filter(|(_idx, dist)| **dist < UNREACHABLE)
+            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
+            .unwrap().0;
+        map_builder.amulet_start = map_builder.map.index_to_point2d(max_distance_idx);
         map_builder
     }
 
@@ -58,7 +75,7 @@ impl MapBuilder {
             let prev_room = rooms[i - 1].center();
             let current_room = room.center();
             if random.range(0, 2) == 1 {
-                self.create_horizontal_tunnel(prev_room.y, prev_room.x, current_room.x+1);
+                self.create_horizontal_tunnel(prev_room.y, prev_room.x, current_room.x + 1);
                 self.create_vertical_tunnel(current_room.x, prev_room.y, current_room.y);
             } else {
                 self.create_vertical_tunnel(prev_room.x, prev_room.y, current_room.y);

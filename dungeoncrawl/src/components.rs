@@ -38,4 +38,6 @@ pub struct Health {
 #[derive(Clone, PartialEq)]
 pub struct Name(pub String); // -> https://doc.rust-lang.org/1.26.2/unstable-book/language-features/repr-transparent.html
 
+#[derive(Clone, Copy, Debug, PartialEq)] pub struct Item;
+#[derive(Clone, Copy, Debug, PartialEq)] pub struct AmuletOfYala;
 
