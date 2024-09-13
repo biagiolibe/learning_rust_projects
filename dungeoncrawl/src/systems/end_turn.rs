@@ -26,6 +26,5 @@ pub fn end_turn(
             new_state = TurnState::Victory;
         }
     });
-
     *turn_state = new_state;
 }
