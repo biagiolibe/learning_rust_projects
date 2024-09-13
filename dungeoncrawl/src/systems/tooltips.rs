@@ -15,7 +15,7 @@ pub fn tooltips(
     let map_pos = (*mouse_pos / 4) + offset;
     let mut draw_batch = DrawBatch::new();
 
-    let player_fov = <(&FieldOfView)>::query().filter(component::<Player>())
+    let player_fov = <&FieldOfView>::query().filter(component::<Player>())
         .iter(ecs)
         .next()
         .unwrap();
