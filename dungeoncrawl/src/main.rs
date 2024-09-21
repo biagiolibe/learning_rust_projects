@@ -115,11 +115,9 @@ impl State {
         let map_builder = MapBuilder::new(&mut random);
         spawn_player(&mut ecs, map_builder.player_start);
         spawn_amulet_of_yala(&mut ecs, map_builder.amulet_start);
-        map_builder.rooms
+        map_builder.monster_spawns
             .iter()
-            .skip(1)
-            .map(|room| room.center())
-            .for_each(|pos| spawn_monster(&mut ecs, pos, &mut random));
+            .for_each(|pos| spawn_monster(&mut ecs, *pos, &mut random));
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
         resources.insert(TurnState::AwaitingInput);

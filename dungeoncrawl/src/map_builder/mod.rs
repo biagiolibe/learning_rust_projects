@@ -1,46 +1,69 @@
+use crate::map::TileType::Floor;
+use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::prelude::*;
 
+mod empty;
+mod rooms;
+mod automata;
+
 const NUM_ROOMS: usize = 20;
+
+trait MapArchitect {
+    fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
+}
 
 pub struct MapBuilder {
     pub map: Map,
     pub rooms: Vec<Rect>,
+    pub monster_spawns: Vec<Point>,
     pub player_start: Point,
     pub amulet_start: Point,
 }
 
 impl MapBuilder {
-    pub fn new(random: &mut RandomNumberGenerator) -> Self {
-        let mut map_builder = MapBuilder {
-            map: Map::new(),
-            rooms: Vec::new(),
-            player_start: Point::zero(),
-            amulet_start: Point::zero(),
-        };
-        map_builder.fill(TileType::Wall);
-        map_builder.build_random_rooms(random);
-        map_builder.build_corridors(random);
-        map_builder.player_start = map_builder.rooms.first().map_or(Point::zero(), |r| r.center());
-        let dijkstra_map = DijkstraMap::new(
-            SCREEN_WIDTH,
-            SCREEN_HEIGHT,
-            &vec![map_builder.map.point2d_to_index(map_builder.player_start)],
-            &map_builder.map,
-            1024.0,
-        );
-        const UNREACHABLE: f32 = f32::MAX;
-        let max_distance_idx = dijkstra_map.map
-            .iter()
-            .enumerate()
-            .filter(|(_idx, dist)| **dist < UNREACHABLE)
-            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-            .unwrap().0;
-        map_builder.amulet_start = map_builder.map.index_to_point2d(max_distance_idx);
-        map_builder
+    pub fn new(rnd: &mut RandomNumberGenerator) -> Self {
+        let mut architect = CellularAutomataArchitect {};
+        architect.new(rnd)
     }
 
     fn fill(&mut self, tile_type: TileType) {
         self.map.tiles.iter_mut().for_each(|tile| *tile = tile_type);
+    }
+
+    fn spawn_monsters(&mut self, start: &Point, random: &mut RandomNumberGenerator) -> Vec<Point> {
+        const NUM_MONSTERS: usize = 50;
+        let mut spawnable_points: Vec<Point> = self.map.tiles.iter()
+            .enumerate()
+            .filter(|(idx, tile_type)| **tile_type == Floor &&
+                DistanceAlg::Pythagoras.distance2d(self.map.index_to_point2d(*idx), *start) > 10.0)
+            .map(|(idx, _)| self.map.index_to_point2d(idx))
+            .collect();
+        let mut spawn_points: Vec<Point> = Vec::new();
+        for _ in 0..=NUM_MONSTERS {
+            let random_spawnable_point = random.random_slice_index(&spawnable_points).unwrap();
+            spawn_points.push(spawnable_points[random_spawnable_point].clone());
+            spawnable_points.remove(random_spawnable_point);
+        }
+        spawn_points
+    }
+
+    fn find_most_distant(&self) -> Point {
+        let dijkstra_map = DijkstraMap::new(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            &vec![self.map.point2d_to_index(self.player_start)],
+            &self.map,
+            1024.0,
+        );
+        const UNREACHABLE: f32 = f32::MAX;
+        self.map.index_to_point2d(
+            dijkstra_map.map
+                .iter()
+                .enumerate()
+                .filter(|(_idx, dist)| **dist < UNREACHABLE)
+                .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
+                .unwrap().0
+        )
     }
 
     fn build_random_rooms(&mut self, random: &mut RandomNumberGenerator) {
@@ -85,7 +108,7 @@ impl MapBuilder {
     }
 
     fn create_vertical_tunnel(&mut self, x: i32, y1: i32, y2: i32) {
-        use std::cmp::{min, max};
+        use std::cmp::{max, min};
         for y in min(y1, y2)..max(y1, y2) {
             if let Some(idx) = self.map.try_idx(Point::new(x, y)) {
                 self.map.tiles[idx] = TileType::Floor;
@@ -94,7 +117,7 @@ impl MapBuilder {
     }
 
     fn create_horizontal_tunnel(&mut self, y: i32, x1: i32, x2: i32) {
-        use std::cmp::{min, max};
+        use std::cmp::{max, min};
         for x in min(x1, x2)..max(x1, x2) {
             if let Some(idx) = self.map.try_idx(Point::new(x, y)) {
                 self.map.tiles[idx] = TileType::Floor;
