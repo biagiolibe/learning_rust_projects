@@ -1,6 +1,8 @@
+use rand::random;
 use crate::map::TileType::Floor;
 use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::map_builder::drunkard::DrunkardsWalkArchitect;
+use crate::map_builder::prefab::apply_prefab;
 use crate::map_builder::rooms::RoomsArchitect;
 use crate::prelude::*;
 
@@ -8,6 +10,7 @@ mod empty;
 mod rooms;
 mod automata;
 mod drunkard;
+mod prefab;
 
 const NUM_ROOMS: usize = 20;
 
@@ -32,7 +35,9 @@ impl MapBuilder {
             _ => Box::new(CellularAutomataArchitect{}),
         };
         println!("Generating map using architect {}", architect.who_am_i());
-        architect.new(rnd)
+        let mut map_builder = architect.new(rnd);
+        apply_prefab(&mut map_builder, rnd);
+        map_builder
     }
 
     fn fill(&mut self, tile_type: TileType) {
