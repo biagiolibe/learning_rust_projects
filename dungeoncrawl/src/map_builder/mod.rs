@@ -1,10 +1,13 @@
+use legion::world::Duplicate;
 use crate::map::TileType::Floor;
 use crate::map_builder::automata::CellularAutomataArchitect;
+use crate::map_builder::drunkard::DrunkardsWalkArchitect;
 use crate::prelude::*;
 
 mod empty;
 mod rooms;
 mod automata;
+mod drunkard;
 
 const NUM_ROOMS: usize = 20;
 
@@ -22,7 +25,7 @@ pub struct MapBuilder {
 
 impl MapBuilder {
     pub fn new(rnd: &mut RandomNumberGenerator) -> Self {
-        let mut architect = CellularAutomataArchitect {};
+        let mut architect = DrunkardsWalkArchitect {};
         architect.new(rnd)
     }
 
