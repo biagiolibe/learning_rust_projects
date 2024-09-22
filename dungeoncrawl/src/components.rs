@@ -31,6 +31,12 @@ pub struct WantsToAttack {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+pub struct WantsActivateItem {
+    pub used_by: Entity,
+    pub item: Entity,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Health {
     pub current: i32,
     pub max: i32,
@@ -50,6 +56,17 @@ pub struct FieldOfView {
     pub radius: i32,
     pub is_dirty: bool,
 }
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ProvidesHealing{
+    pub amount: i32
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct ProvidesDungeonMap{}
+
+#[derive(Clone, PartialEq)]
+pub struct Carried(pub Entity);
+
 impl FieldOfView {
     pub fn new(radius: i32) -> Self {
         Self {
