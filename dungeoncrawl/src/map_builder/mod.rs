@@ -1,6 +1,4 @@
-use legion::world::Duplicate;
 use crate::map::TileType::Floor;
-use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::map_builder::drunkard::DrunkardsWalkArchitect;
 use crate::prelude::*;
 

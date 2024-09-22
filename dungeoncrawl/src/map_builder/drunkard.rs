@@ -61,7 +61,7 @@ impl MapArchitect for DrunkardsWalkArchitect {
                 .filter(|(_, distance)| **distance > 2000.0)
                 .for_each(|(index, _)| map_builder.map.tiles[index] = Wall);
         }
-        map_builder.spawn_monsters(&center_position, random);
+        map_builder.monster_spawns = map_builder.spawn_monsters(&center_position, random);
         map_builder.player_start = center_position;
         map_builder.amulet_start = map_builder.find_most_distant();
         map_builder
