@@ -22,4 +22,8 @@ impl MapArchitect for EmptyArchitect {
         }
         map_builder
     }
+
+    fn who_am_i(&mut self) -> String {
+        "EmptyArchitect".to_string()
+    }
 }

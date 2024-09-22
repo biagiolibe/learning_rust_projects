@@ -72,4 +72,8 @@ impl MapArchitect for CellularAutomataArchitect {
         map_builder.amulet_start = map_builder.find_most_distant();
         map_builder
     }
+
+    fn who_am_i(&mut self) -> String{
+        "CellularAutomataArchitect".to_string()
+    }
 }

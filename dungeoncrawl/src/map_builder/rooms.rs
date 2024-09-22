@@ -25,4 +25,8 @@ impl MapArchitect for RoomsArchitect {
             .for_each(|room| map_builder.monster_spawns.push(room.center()));
         map_builder
     }
+
+    fn who_am_i(&mut self) -> String {
+        "RoomsArchitect".to_string()
+    }
 }

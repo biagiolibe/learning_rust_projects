@@ -1,5 +1,7 @@
 use crate::map::TileType::Floor;
+use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::map_builder::drunkard::DrunkardsWalkArchitect;
+use crate::map_builder::rooms::RoomsArchitect;
 use crate::prelude::*;
 
 mod empty;
@@ -11,6 +13,7 @@ const NUM_ROOMS: usize = 20;
 
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
+    fn who_am_i(&mut self) -> String;
 }
 
 pub struct MapBuilder {
@@ -23,7 +26,12 @@ pub struct MapBuilder {
 
 impl MapBuilder {
     pub fn new(rnd: &mut RandomNumberGenerator) -> Self {
-        let mut architect = DrunkardsWalkArchitect {};
+        let mut architect: Box<dyn MapArchitect> = match rnd.range(0,3) {
+            0 => Box::new(DrunkardsWalkArchitect {}),
+            1 => Box::new(RoomsArchitect{}),
+            _ => Box::new(CellularAutomataArchitect{}),
+        };
+        println!("Generating map using architect {}", architect.who_am_i());
         architect.new(rnd)
     }
 
