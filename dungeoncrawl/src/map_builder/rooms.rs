@@ -1,4 +1,5 @@
 use crate::map_builder::MapArchitect;
+use crate::map_builder::themes::DungeonTheme;
 use crate::prelude::*;
 pub struct RoomsArchitect {}
 
@@ -8,6 +9,7 @@ impl MapArchitect for RoomsArchitect {
     fn new(&mut self, random: &mut RandomNumberGenerator) -> MapBuilder {
         let mut map_builder = MapBuilder {
             map: Map::new(),
+            theme: DungeonTheme::new(),
             rooms: Vec::new(),
             monster_spawns: Vec::new(),
             player_start: Point::zero(),
@@ -26,7 +28,7 @@ impl MapArchitect for RoomsArchitect {
         map_builder
     }
 
-    fn who_am_i(&mut self) -> String {
+    fn who_am_i(&self) -> String {
         "RoomsArchitect".to_string()
     }
 }

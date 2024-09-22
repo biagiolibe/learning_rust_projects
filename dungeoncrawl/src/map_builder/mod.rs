@@ -1,9 +1,9 @@
-use rand::random;
 use crate::map::TileType::Floor;
 use crate::map_builder::automata::CellularAutomataArchitect;
 use crate::map_builder::drunkard::DrunkardsWalkArchitect;
 use crate::map_builder::prefab::apply_prefab;
 use crate::map_builder::rooms::RoomsArchitect;
+use crate::map_builder::themes::{DungeonTheme, ForestTheme};
 use crate::prelude::*;
 
 mod empty;
@@ -11,16 +11,23 @@ mod rooms;
 mod automata;
 mod drunkard;
 mod prefab;
+mod themes;
 
 const NUM_ROOMS: usize = 20;
 
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> MapBuilder;
-    fn who_am_i(&mut self) -> String;
+    fn who_am_i(&self) -> String;
+}
+
+pub trait MapTheme: Sync + Send {
+    fn tile_to_render(&self, tile_type: TileType) -> FontCharType;
+    fn who_am_i(&self) -> String;
 }
 
 pub struct MapBuilder {
     pub map: Map,
+    pub theme: Box<dyn MapTheme>,
     pub rooms: Vec<Rect>,
     pub monster_spawns: Vec<Point>,
     pub player_start: Point,
@@ -29,14 +36,19 @@ pub struct MapBuilder {
 
 impl MapBuilder {
     pub fn new(rnd: &mut RandomNumberGenerator) -> Self {
-        let mut architect: Box<dyn MapArchitect> = match rnd.range(0,3) {
+        let mut architect: Box<dyn MapArchitect> = match rnd.range(0, 3) {
             0 => Box::new(DrunkardsWalkArchitect {}),
-            1 => Box::new(RoomsArchitect{}),
-            _ => Box::new(CellularAutomataArchitect{}),
+            1 => Box::new(RoomsArchitect {}),
+            _ => Box::new(CellularAutomataArchitect {}),
         };
-        println!("Generating map using architect {}", architect.who_am_i());
         let mut map_builder = architect.new(rnd);
         apply_prefab(&mut map_builder, rnd);
+        let theme: Box<dyn MapTheme> = match rnd.range(0, 2) {
+            0 => DungeonTheme::new(),
+            _ => ForestTheme::new(),
+        };
+        println!("Generating map using architect {} and theme {}", architect.who_am_i(), theme.who_am_i());
+        map_builder.theme = theme;
         map_builder
     }
 

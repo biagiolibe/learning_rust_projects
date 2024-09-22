@@ -1,4 +1,5 @@
 use crate::map::TileType::{Floor, Wall};
+use crate::map_builder::themes::DungeonTheme;
 use crate::map_builder::MapArchitect;
 use crate::prelude::*;
 pub struct CellularAutomataArchitect {}
@@ -57,6 +58,7 @@ impl MapArchitect for CellularAutomataArchitect {
     fn new(&mut self, random: &mut RandomNumberGenerator) -> MapBuilder {
         let mut map_builder = MapBuilder {
             map: Map::new(),
+            theme: DungeonTheme::new(),
             rooms: Vec::new(),
             monster_spawns: Vec::new(),
             player_start: Point::zero(),
@@ -73,7 +75,7 @@ impl MapArchitect for CellularAutomataArchitect {
         map_builder
     }
 
-    fn who_am_i(&mut self) -> String{
+    fn who_am_i(&self) -> String{
         "CellularAutomataArchitect".to_string()
     }
 }

@@ -7,6 +7,7 @@ pub fn map_render(
     ecs: &SubWorld,
     #[resource] map: &Map,
     #[resource] camera: &Camera,
+    #[resource] theme: &Box<dyn MapTheme>,
 ) {
     let mut field_of_view = <&FieldOfView>::query().filter(component::<Player>());
     let player_fov = field_of_view.iter(ecs).next().unwrap();
@@ -20,10 +21,7 @@ pub fn map_render(
             let idx = map_idx(point.x, point.y);
             if map.in_bounds(point) && (player_fov.visible_tiles.contains(&point) || map.revealed_tiles[idx]) {
                 let idx = map_idx(x, y);
-                let glyph = match map.tiles[idx] {
-                    TileType::Floor => to_cp437('.'),
-                    TileType::Wall => to_cp437('#'),
-                };
+                let glyph = theme.tile_to_render(map.tiles[idx]);
                 let tint = if player_fov.visible_tiles.contains(&point) {
                     WHITE
                 } else {
