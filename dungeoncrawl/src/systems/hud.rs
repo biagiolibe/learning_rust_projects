@@ -22,6 +22,15 @@ pub fn hud(
     draw_batch.print_color_centered(0,
                                     format!(" Health: {} / {}", player_health.current, player_health.max),
                                     ColorPair::new(WHITE, RED));
+    let player_map_level = <&Player>::query()
+        .iter(ecs)
+        .find_map(|player| Some(player.map_level))
+        .unwrap();
+    draw_batch.print_color_right(
+        Point::new(SCREEN_WIDTH * 2, 1),
+        format!("Dungeon level: {}", player_map_level + 1),
+        ColorPair::new(YELLOW, BLACK),
+    );
     let mut items = <(&Item, &Name, &Carried)>::query();
     let mut carried_items = 0;
     items.iter(ecs)
