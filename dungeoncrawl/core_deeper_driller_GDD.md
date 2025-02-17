@@ -1,6 +1,6 @@
 ### Game Design Document (GDD)
 
-#### Titolo provvisorio
+### Titolo provvisorio
 ##### DeepCore Driller
 
 #### Descrizione generale
@@ -9,14 +9,14 @@ DeepCore Driller è un gioco d'avventura e sopravvivenza in cui il giocatore con
 
 #### Piattaforma di gioco
 
-PC
-Console (opzionale)
+PC,
+Console (opzionale),
 Mobile (opzionale)
 
 #### Genere
 
-Azione/Avventura
-Survival
+Azione/Avventura,
+Survival,
 Esplorazione
 
 #### 1. Storia
