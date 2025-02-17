@@ -148,7 +148,7 @@ Colonna sonora ambientale: Musica lenta e misteriosa che aumenta la tensione man
 Linguaggio: Il gioco sarà sviluppato interamente in Rust. Rust è scelto per le sue capacità di gestione della memoria sicura e per la sua alta performance, che lo rendono ideale per giochi che richiedono un controllo preciso delle risorse e una gestione efficiente di sistemi come la fisica e la generazione procedurale di mondi.
 ##### Motore di gioco
 Motore suggerito: Si possono considerare due approcci:
-Bevy: Un motore di gioco open-source e scritto in Rust. Offre una buona base per sviluppare giochi 2D e 3D, con un approccio ECS (Entity Component System) che si integra bene con la filosofia di Rust.
+Bevy + Rapier: Un motore di gioco open-source e scritto in Rust. Offre una buona base per sviluppare giochi 2D e 3D, con un approccio ECS (Entity Component System) che si integra bene con la filosofia di Rust.
 Amethyst: Un altro motore di gioco ECS scritto in Rust, con buone prestazioni per giochi 3D e con strumenti per la gestione della fisica, l'audio e l'animazione.
 ##### Librerie aggiuntive
 rand: Per la generazione di numeri casuali (utile per il contenuto procedurale).

@@ -1,20 +1,20 @@
-use std::collections::HashSet;
-use prelude::*;
 use crate::map::TileType::Exit;
+use prelude::*;
+use std::collections::HashSet;
 
-mod map;
-mod map_builder;
 mod camera;
 mod components;
+mod map;
+mod map_builder;
 mod spawner;
 mod systems;
 mod turn_state;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
-    pub use legion::*;
     pub use legion::systems::CommandBuffer;
     pub use legion::world::SubWorld;
+    pub use legion::*;
 
     pub use crate::camera::*;
     pub use crate::components::*;
@@ -68,14 +68,20 @@ impl State {
 
     fn game_over(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(2);
-        ctx.print_color_centered(2, RED, BLACK,
-                                 "Your quest has ended.");
-        ctx.print_color_centered(4, WHITE, BLACK,
-                                 "Slain by a monster, your hero's journey has came to a premature end.");
-        ctx.print_color_centered(8, YELLOW, BLACK,
-                                 "Don't worry, you can always try again with a new hero.");
-        ctx.print_color_centered(9, GREEN, BLACK,
-                                 "Press 1 to play again or 'q' to quit.");
+        ctx.print_color_centered(2, RED, BLACK, "Your quest has ended.");
+        ctx.print_color_centered(
+            4,
+            WHITE,
+            BLACK,
+            "Slain by a monster, your hero's journey has came to a premature end.",
+        );
+        ctx.print_color_centered(
+            8,
+            YELLOW,
+            BLACK,
+            "Don't worry, you can always try again with a new hero.",
+        );
+        ctx.print_color_centered(9, GREEN, BLACK, "Press 1 to play again or 'q' to quit.");
 
         self.handle_end_game_input(ctx);
     }
@@ -97,46 +103,54 @@ impl State {
     }
 
     fn advance_level(&mut self) {
-        let player = <Entity>::query().filter(component::<Player>())
+        let player = <Entity>::query()
+            .filter(component::<Player>())
             .iter(&self.ecs)
             .nth(0)
             .unwrap();
         let mut entities_to_keep = HashSet::new();
         entities_to_keep.insert(player);
         <(Entity, &Carried)>::query()
-            .iter(&self.ecs).filter(|(_entity, carried)| carried.0 == *player)
-            .for_each(|(entity,_carried)| {
+            .iter(&self.ecs)
+            .filter(|(_entity, carried)| carried.0 == *player)
+            .for_each(|(entity, _carried)| {
                 entities_to_keep.insert(entity);
             });
         let mut commands = CommandBuffer::new(&self.ecs);
         Entity::query().for_each(&self.ecs, |entity| {
-            if !entities_to_keep.contains(entity){
+            if !entities_to_keep.contains(entity) {
                 commands.remove(*entity);
             }
         });
         commands.flush(&mut self.ecs, &mut self.resources);
-        <&mut FieldOfView>::query().for_each_mut(&mut self.ecs, | fov| {
+        <&mut FieldOfView>::query().for_each_mut(&mut self.ecs, |fov| {
             fov.is_dirty = true;
         });
         let mut random = RandomNumberGenerator::new();
         let mut map_builder = MapBuilder::new(&mut random);
         let mut map_level = 0;
-        <(&mut Player, &mut Point)>::query()
-            .for_each_mut(&mut self.ecs, |(player, position)| {
-                player.map_level += 1;
-                map_level = player.map_level;
-                position.x = map_builder.player_start.x;
-                position.y = map_builder.player_start.y;
-            });
+        <(&mut Player, &mut Point)>::query().for_each_mut(&mut self.ecs, |(player, position)| {
+            player.map_level += 1;
+            map_level = player.map_level;
+            position.x = map_builder.player_start.x;
+            position.y = map_builder.player_start.y;
+        });
         if map_level == 1 {
             spawn_amulet_of_yala(&mut self.ecs, map_builder.amulet_start);
         } else {
             let exit = map_builder.map.point2d_to_index(map_builder.amulet_start);
             map_builder.map.tiles[exit] = Exit;
         };
-        map_builder.monster_spawns
+        map_builder
+            .monster_spawns
             .iter()
-            .for_each(|pos| spawn_entity(&mut self.ecs, *pos, &mut random));
+            .for_each(|pos| {
+                spawn_layer(&mut self.ecs, 
+                            &mut self.resources,
+                            &mut random,
+                map_level as usize,
+                &map_builder.monster_spawns)
+            });
         self.resources.insert(map_builder.map);
         self.resources.insert(Camera::new(map_builder.player_start));
         self.resources.insert(TurnState::AwaitingInput);
@@ -145,14 +159,20 @@ impl State {
 
     fn victory(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(2);
-        ctx.print_color_centered(2, GREEN, BLACK,
-                                 "You have won!");
-        ctx.print_color_centered(4, WHITE, BLACK,
-                                 "You put on the Amulet of Yala and feel its power course through your veins.");
-        ctx.print_color_centered(5, WHITE, BLACK,
-                                 "Your town is saved, and you can return to your normal life.");
-        ctx.print_color_centered(7, GREEN, BLACK,
-                                 "Press 1 to play again or 'q' to quit.");
+        ctx.print_color_centered(2, GREEN, BLACK, "You have won!");
+        ctx.print_color_centered(
+            4,
+            WHITE,
+            BLACK,
+            "You put on the Amulet of Yala and feel its power course through your veins.",
+        );
+        ctx.print_color_centered(
+            5,
+            WHITE,
+            BLACK,
+            "Your town is saved, and you can return to your normal life.",
+        );
+        ctx.print_color_centered(7, GREEN, BLACK, "Press 1 to play again or 'q' to quit.");
 
         self.handle_end_game_input(ctx);
     }
@@ -166,13 +186,17 @@ impl State {
         let exit = map_builder.map.point2d_to_index(map_builder.amulet_start);
         map_builder.map.tiles[exit] = Exit;
         //spawn_amulet_of_yala(&mut ecs, map_builder.amulet_start);
-        map_builder.monster_spawns
-            .iter()
-            .for_each(|pos| spawn_entity(&mut ecs, *pos, &mut random));
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
         resources.insert(TurnState::AwaitingInput);
         resources.insert(map_builder.theme);
+        spawn_layer(
+            &mut ecs,
+            &mut resources,
+            &mut random,
+            0,
+            &map_builder.monster_spawns,
+        );
         //return world and resources as tuple
         (ecs, resources)
     }
@@ -190,9 +214,15 @@ impl GameState for State {
         self.resources.insert(Point::from_tuple(ctx.mouse_pos()));
         let current_state = self.resources.get::<TurnState>().unwrap().clone();
         match current_state {
-            TurnState::AwaitingInput => self.input_systems.execute(&mut self.ecs, &mut self.resources),
-            TurnState::PlayerTurn => self.player_systems.execute(&mut self.ecs, &mut self.resources),
-            TurnState::MonsterTurn => self.monster_systems.execute(&mut self.ecs, &mut self.resources),
+            TurnState::AwaitingInput => self
+                .input_systems
+                .execute(&mut self.ecs, &mut self.resources),
+            TurnState::PlayerTurn => self
+                .player_systems
+                .execute(&mut self.ecs, &mut self.resources),
+            TurnState::MonsterTurn => self
+                .monster_systems
+                .execute(&mut self.ecs, &mut self.resources),
             TurnState::GameOver => self.game_over(ctx),
             TurnState::Victory => self.victory(ctx),
             TurnState::NextLevel => self.advance_level(),
