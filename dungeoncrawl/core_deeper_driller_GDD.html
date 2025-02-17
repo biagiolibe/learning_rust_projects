@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Game Design Document &lpar;GDD&rpar;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h3 id="game-design-document-gdd">Game Design Document (GDD)</h3>
+<h4 id="titolo-provvisorio">Titolo provvisorio</h4>
+<h5 id="deepcore-driller">DeepCore Driller</h5>
+<h4 id="descrizione-generale">Descrizione generale</h4>
+<p>DeepCore Driller è un gioco d'avventura e sopravvivenza in cui il giocatore controlla una trivella avanzata che si trova sulla superficie di un enorme asteroide. L'obiettivo principale del giocatore è scendere nelle profondità del corpo celeste, raccogliendo materiali preziosi per potenziare la trivella e scoprire misteri sepolti: teletrasporti, reliquie di spedizioni passate e altre anomalie.</p>
+<h4 id="piattaforma-di-gioco">Piattaforma di gioco</h4>
+<p>PC
+Console (opzionale)
+Mobile (opzionale)</p>
+<h4 id="genere">Genere</h4>
+<p>Azione/Avventura
+Survival
+Esplorazione</p>
+<h4 id="1-storia">1. Storia</h4>
+<h5 id="ambientazione">Ambientazione</h5>
+<p>Il gioco si svolge su un gigantesco asteroide chiamato Koronis 12, scoperto durante una missione di esplorazione spaziale. Si è scoperto che le sue profondità contengono minerali rari e preziosi, oltre a misteriosi artefatti di un'antica civiltà aliena.</p>
+<h5 id="trama-di-base">Trama di base</h5>
+<p>Il giocatore controlla una trivella automatizzata inviata sulla superficie dell'asteroide per estrarre materiali rari e spedire informazioni sulla misteriosa attività che avviene sotto la superficie. Nel corso della discesa, il giocatore scoprirà segreti dimenticati e reliquie di missioni fallite, sbloccando nuove tecnologie e pezzi di storia.</p>
+<h5 id="elementi-narrativi-chiave">Elementi narrativi chiave</h5>
+<p>Missioni di recupero: Trova e sblocca tecnologie nascoste (portali, strumenti scientifici, ecc.).
+Storia delle spedizioni passate: Il giocatore troverà frammenti di diari e dati lasciati da esploratori precedenti, che aiuteranno a svelare la storia dell'asteroide.
+Civilizzazione aliena: Strani artefatti e strutture sotterranee indicano una civiltà tecnologicamente avanzata che ha abitato l'asteroide millenni fa.</p>
+<h4 id="2-gameplay">2. Gameplay</h4>
+<h5 id="obiettivo-principale">Obiettivo principale</h5>
+<p>Scendere nelle profondità dell'asteroide, raccogliendo risorse e scoprendo segreti per migliorare la trivella e proseguire nella discesa.</p>
+<h5 id="ciclo-di-gameplay">Ciclo di gameplay</h5>
+<p>Esplorazione: Il giocatore scava nuovi tunnel per progredire sempre più in profondità. Diverse aree presentano ambienti ostili, ostacoli, e tesori.
+Raccolta di materiali: Estrarre risorse naturali come minerali rari, cristalli energetici e materiali alieni. Le risorse vengono utilizzate per migliorare la trivella e sbloccare nuove funzionalità.
+Miglioramento della trivella: Utilizzare i materiali raccolti per potenziare la trivella, incrementando la sua resistenza, velocità di perforazione, capacità di stoccaggio, e altre funzioni speciali.
+Scoperta di misteri: Trovare portali di teletrasporto che aprono nuove aree o shortcut. Scoprire reliquie che danno indizi su una storia più profonda.
+Gestione delle risorse: La trivella ha un limite energetico, riserve d'ossigeno e sistemi di protezione da gestire. Il giocatore deve bilanciare l'esplorazione con il ritorno in superficie per rifornirsi o ripararsi.</p>
+<h5 id="meccaniche-principali">Meccaniche principali</h5>
+<p>Perforazione: Il giocatore controlla la trivella e scava attraverso strati di terreno sempre più duri e pericolosi.
+Gestione delle risorse: Monitorare il carburante, l'ossigeno, la resistenza della trivella e la quantità di risorse immagazzinate.
+Miglioramento: Aggiornare componenti come il trapano, la corazza e i sensori, oltre a sbloccare nuove capacità (ad esempio, trivelle laser, escavatori a onde soniche).
+Scoperta di oggetti misteriosi: Portali di teletrasporto, frammenti alieni e diari criptati.</p>
+<h5 id="struttura-del-mondo">Struttura del mondo</h5>
+<p>Livelli procedurali: Le profondità dell'asteroide sono generate in modo procedurale per garantire un'esperienza unica ogni volta.
+Basi intermedie: Alcune zone sicure permettono al giocatore di recuperare energie e prepararsi per la discesa successiva.</p>
+<h4 id="3-personaggi">3. Personaggi</h4>
+<h5 id="protagonista">Protagonista</h5>
+<p>La Trivella: La trivella avanzata è il protagonista del gioco. È equipaggiata con intelligenza artificiale e capacità di auto-riparazione. Man mano che si migliorano i suoi componenti, può diventare un'unità versatile e personalizzabile.</p>
+<h5 id="altri-personaggi">Altri personaggi</h5>
+<p>IA di supporto: L'intelligenza artificiale della missione guida il giocatore, fornendo aggiornamenti sulle missioni e informazioni sulle risorse raccolte.
+Spedizioni precedenti: Frammenti di memorie olografiche lasciate da spedizioni fallite, che danno al giocatore indizi su cosa aspettarsi nelle profondità.</p>
+<h4 id="4-progressione">4. Progressione</h4>
+<h5 id="sistema-di-progressione">Sistema di progressione</h5>
+<p>Esperienza e avanzamento: Il giocatore guadagna punti esperienza scoprendo misteri, raccogliendo materiali e completando obiettivi. I punti esperienza possono essere spesi per potenziare componenti della trivella.
+Alberi di potenziamento: Diverse branche di potenziamenti possono essere sviluppate, come:
+Resistenza: Aumenta la capacità della trivella di resistere a pressioni, calore e danni.
+Efficienza estrattiva: Migliora la velocità di perforazione e la capacità di estrarre materiali più rari.
+Capacità speciali: Aggiunge strumenti come radar avanzati, trivelle laser o moduli di teletrasporto.
+Checkpoint e salvataggio
+Il giocatore può salvare il proprio progresso solo in specifiche basi intermedie o utilizzando un sistema di checkpoint sotterranei (portali di teletrasporto).</p>
+<h4 id="5-grafica-e-stile-artistico">5. Grafica e stile artistico</h4>
+<h5 id="stile-visivo">Stile visivo</h5>
+<p>Tema sci-fi futuristico: La trivella e le sue interfacce devono avere un look futuristico, ma con segni di usura per evidenziare il loro uso prolungato.
+Ambienti alieni: Le profondità dell'asteroide dovrebbero essere misteriose, con vari biomi sotterranei, come caverne cristalline, aree laviche, e tunnel artificiali creati da antiche civiltà.
+Interfaccia: Minimalista, con informazioni visive chiare su energia, ossigeno e materiali raccolti.</p>
+<h4 id="6-suono-e-musica">6. Suono e Musica</h4>
+<h5 id="sound-design">Sound design</h5>
+<p>Suoni ambientali: Rombi profondi del trivellatore, rumori metallici, eco sotterranee.
+Effetti sonori: Ogni azione della trivella ha un suono distinto, dai suoni di scavo a quelli dei macchinari che si attivano.
+Suoni ambientali misteriosi: Quando si avvicinano reliquie o segreti alieni, si sentono strani suoni che aggiungono un'atmosfera di tensione e scoperta.</p>
+<h5 id="musica">Musica</h5>
+<p>Colonna sonora ambientale: Musica lenta e misteriosa che aumenta la tensione man mano che il giocatore scende più in profondità. Durante le scoperte importanti, la musica diventa più epica e suggestiva.</p>
+<h4 id="7-aspetti-tecnici">7. Aspetti tecnici</h4>
+<h5 id="linguaggio-di-programmazione">Linguaggio di programmazione</h5>
+<p>Linguaggio: Il gioco sarà sviluppato interamente in Rust. Rust è scelto per le sue capacità di gestione della memoria sicura e per la sua alta performance, che lo rendono ideale per giochi che richiedono un controllo preciso delle risorse e una gestione efficiente di sistemi come la fisica e la generazione procedurale di mondi.
+Motore di gioco
+Motore suggerito: Si possono considerare due approcci:
+Bevy: Un motore di gioco open-source e scritto in Rust. Offre una buona base per sviluppare giochi 2D e 3D, con un approccio ECS (Entity Component System) che si integra bene con la filosofia di Rust.
+Amethyst: Un altro motore di gioco ECS scritto in Rust, con buone prestazioni per giochi 3D e con strumenti per la gestione della fisica, l'audio e l'animazione.
+Librerie aggiuntive
+rand: Per la generazione di numeri casuali (utile per il contenuto procedurale).
+winit: Per la gestione delle finestre e degli eventi.
+wgpu: Per il rendering grafico (se si vuole lavorare direttamente con il rendering).
+serde: Per la serializzazione e deserializzazione dei dati di gioco (ad esempio, salvataggi).
+Ottimizzazione e gestione delle risorse
+Essendo un gioco che prevede la gestione di risorse critiche (energia, ossigeno, materiali), Rust consente una gestione accurata della memoria e dell'allocazione delle risorse senza garbage collector, garantendo prestazioni elevate anche in situazioni complesse come la generazione procedurale di livelli.</p>
+<h4 id="8-monetizzazione-opzionale">8. Monetizzazione (opzionale)</h4>
+<h5 id="dlcespansioni-nuovi-livelli-asteroidi-aggiuntivi-o-funzionalità-avanzate-di-trivellazione">DLC/espansioni: Nuovi livelli, asteroidi aggiuntivi o funzionalità avanzate di trivellazione.</h5>
+<h5 id="skin-personalizzabili-per-la-trivella-modifiche-estetiche-es-colori-decorazioni-futuristiche">Skin personalizzabili per la trivella: Modifiche estetiche (es. colori, decorazioni futuristiche).</h5>
+
+            
+            
+        </body>
+        </html>
