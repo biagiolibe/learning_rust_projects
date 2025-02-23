@@ -20,7 +20,7 @@ pub fn player_input(
             VirtualKeyCode::Right => Point::new(1, 0),
             VirtualKeyCode::Up => Point::new(0, -1),
             VirtualKeyCode::Down => Point::new(0, 1),
-            VirtualKeyCode::G => {
+            VirtualKeyCode::F => {
                 let (player, player_position) = players.iter(ecs)
                     .find_map(|(entity, position)| Some((*entity, *position)))
                     .unwrap();
@@ -30,6 +30,15 @@ pub fn player_input(
                     .for_each(|(entity, _item, _item_position)| {
                         commands.remove_component::<Point>(*entity);
                         commands.add_component(*entity, Carried(player));
+                        if let Ok(e) = ecs.entry_ref(*entity) {
+                            if e.get_component::<Weapon>().is_ok() {
+                                <(Entity, &Carried, &Weapon)>::query().iter(ecs)
+                                    .filter(|(_, carried, _)| carried.0 == player)
+                                    .for_each(|(entity, _, _)| {
+                                        commands.remove(*entity)
+                                    });
+                            }
+                        }
                     });
                 Point::new(0, 0)
             }
